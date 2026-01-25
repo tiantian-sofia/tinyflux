@@ -118,7 +118,8 @@ def test_csv_kwargs(tmpdir):
 
     db.insert(p1)
 
-    data = open(dbfile).read()
+    with open(dbfile) as file:
+        data = file.read()
 
     assert re.fullmatch(
         r"[0-9-]{10}T[0-9.:]{8,}"

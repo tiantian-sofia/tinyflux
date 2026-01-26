@@ -33,7 +33,7 @@ This generates three professional charts:
 - Multi-core CPU recommended for faster processing
 
 **Software:**
-- Python 3.8+ 
+- Python 3.9+ 
 - Dependencies: `psutil`, `matplotlib`, `numpy`
 
 **Time:**

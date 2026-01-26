@@ -17,6 +17,7 @@ v1.2.0 - January 26, 2026
 * Fixed unclosed file handles in test suite
 * Added ``.venv`` and ``venv`` to ``.gitignore`` and black exclude patterns
 * Pinned black to 25.x for consistent formatting across all supported Python versions
+* Updated download count to 150,000+
 
 v1.1.1 - September 20, 2025
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -78,7 +79,7 @@ v1.0.1 - September 19, 2025
 * Updated GitHub Actions to latest versions for better security and performance
 * Updated documentation and package metadata for new Python version requirements
 * Fixed decorator bug in temp_storage_op that was introduced in decorator refactoring
-* Updated download count to reflect 120,000+ downloads
+* Updated download count to reflect 150,000+ downloads
 
 v1.0.0 - April 13, 2024
 ^^^^^^^^^^^^^^^^^^^^^^^

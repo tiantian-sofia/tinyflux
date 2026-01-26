@@ -9,6 +9,7 @@ v1.2.0 - January 26, 2026
 **Breaking Changes:**
 
 * Dropped Python 3.8 support (reached end-of-life October 2024)
+* Dropped PyPy support (compatibility issues with modern tooling)
 * Minimum required Python version is now 3.9
 
 **Improvements:**

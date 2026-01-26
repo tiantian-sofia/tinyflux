@@ -1,6 +1,22 @@
 Changelog
 =========
 
+v1.2.0 - January 26, 2026
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**🐍 Python Version Update**
+
+**Breaking Changes:**
+
+* Dropped Python 3.8 support (reached end-of-life October 2024)
+* Minimum required Python version is now 3.9
+
+**Improvements:**
+
+* Fixed unclosed file handles in test suite
+* Added ``.venv`` and ``venv`` to ``.gitignore`` and black exclude patterns
+* Pinned black to 25.x for consistent formatting across all supported Python versions
+
 v1.1.1 - September 20, 2025
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

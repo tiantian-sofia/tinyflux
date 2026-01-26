@@ -1,6 +1,6 @@
 [tool.black]
 line-length = 80
-exclude = '(docs|\.ipynb$)'
+exclude = '(\.venv|venv|docs|\.ipynb$)'
 
 [build-system]
 requires = ["setuptools>=42"]

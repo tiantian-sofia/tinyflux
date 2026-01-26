@@ -1273,8 +1273,8 @@ def test_insert_compact_keys(tmpdir):
     assert len(db.index) == 1
     assert len(db) == 1
 
-    f = open(path, "r+")
-    rows = list(csv.reader(f))
+    with open(path, "r+") as f:
+        rows = list(csv.reader(f))
 
     assert rows[0][2].startswith(p._compact_tag_key_prefix)
     assert rows[0][4].startswith(p._compact_field_key_prefix)
@@ -1286,8 +1286,8 @@ def test_insert_compact_keys(tmpdir):
     assert len(db.index) == 3
     assert len(db) == 3
 
-    f = open(path, "r+")
-    rows = list(csv.reader(f))
+    with open(path, "r+") as f:
+        rows = list(csv.reader(f))
 
     for row in rows:
         assert row[2].startswith(p._compact_tag_key_prefix)

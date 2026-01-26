@@ -164,7 +164,7 @@ def plot_write_performance_scaling(
     ax1.set_xticks(x_pos)
     ax1.set_xticklabels(size_labels)
     ax1.grid(True, alpha=0.3)
-    ax1.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
+    ax1.ticklabel_format(style="scientific", axis="y", scilimits=(0, 0))
 
     # Chart 2: Memory Batch Writes
     ax2.bar(x_pos, write_data["memory_batch"], color="#2E8B57", alpha=0.8)
@@ -174,10 +174,12 @@ def plot_write_performance_scaling(
     ax2.set_xticks(x_pos)
     ax2.set_xticklabels(size_labels)
     ax2.grid(True, alpha=0.3)
-    ax2.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
+    ax2.ticklabel_format(style="scientific", axis="y", scilimits=(0, 0))
 
     # Chart 3: CSV Individual Writes
-    csv_individual_filtered = [val if val > 0 else 0 for val in write_data["csv_individual"]]
+    csv_individual_filtered = [
+        val if val > 0 else 0 for val in write_data["csv_individual"]
+    ]
     bars3 = ax3.bar(x_pos, csv_individual_filtered, color="#CD853F", alpha=0.8)
     ax3.set_xlabel("Database Size")
     ax3.set_ylabel("Writes per Second")
@@ -185,12 +187,19 @@ def plot_write_performance_scaling(
     ax3.set_xticks(x_pos)
     ax3.set_xticklabels(size_labels)
     ax3.grid(True, alpha=0.3)
-    
+
     # Add "Skipped" text for zero values
     for i, (bar, val) in enumerate(zip(bars3, write_data["csv_individual"])):
         if val <= 0:
-            ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(csv_individual_filtered)*0.02,
-                    'Skipped\n(>3min)', ha='center', va='bottom', fontsize=8, color='red')
+            ax3.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height() + max(csv_individual_filtered) * 0.02,
+                "Skipped\n(>3min)",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+                color="red",
+            )
 
     # Chart 4: CSV Batch Writes
     ax4.bar(x_pos, write_data["csv_batch"], color="#CD853F", alpha=0.8)
@@ -211,7 +220,9 @@ def plot_write_performance_scaling(
     )
 
     plt.tight_layout()
-    plt.savefig("charts/write_performance_scaling.png", dpi=300, bbox_inches="tight")
+    plt.savefig(
+        "charts/write_performance_scaling.png", dpi=300, bbox_inches="tight"
+    )
     plt.close()
     print("📊 Generated: charts/write_performance_scaling.png")
 
@@ -279,7 +290,9 @@ def plot_read_performance_scaling(
     )
 
     plt.tight_layout()
-    plt.savefig("charts/read_performance_scaling.png", dpi=300, bbox_inches="tight")
+    plt.savefig(
+        "charts/read_performance_scaling.png", dpi=300, bbox_inches="tight"
+    )
     plt.close()
     print("📊 Generated: charts/read_performance_scaling.png")
 
@@ -400,7 +413,7 @@ def main():
     """Generate all performance visualization charts."""
     print("🎨 TinyFlux Performance Visualization")
     print("=" * 40)
-    
+
     # Create charts directory if it doesn't exist
     os.makedirs("charts", exist_ok=True)
 

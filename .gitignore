@@ -11,6 +11,10 @@
 # Pyenv
 .python-version
 
+# Virtual environments
+.venv/
+venv/
+
 # Coverage.py
 .coverage
 

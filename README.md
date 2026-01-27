@@ -206,13 +206,11 @@ TinyFlux automatic indexing provides:
 
 ## TinyFlux Across the Internet
 
-- **IoT Sensor Networks**: Collect and analyze device telemetry
-- **System Monitoring**: Track server metrics and application performance  
-- **Financial Data**: Store and query stock prices, trading volumes
-- **Scientific Research**: Log experimental measurements and observations
-- **Web Analytics**: Time-stamped user interaction data
+Articles, tutorials, and other instances of TinyFlux in the wild:
 
-*Perfect for prototyping, edge computing, embedded systems, and applications where simplicity matters.*
+- ["Introducing TinyFlux: The Tiny Time Series Database for Python-based IoT & Analytics Applications"](https://citrusvanilla.medium.com/introducing-tinyflux-the-tiny-time-series-database-for-python-based-iot-analytics-applications-c3ef3c3bedf): A Medium.com article announcing the release of TinyFlux
+- ["Storing Time Series Data in Python Using TinyFluxDB"](http://www.steves-internet-guide.com/storing-time-series-data-python-using-tinyflux-db/): A tutorial from [Steve's Internet Guide](http://www.steves-internet-guide.com/), a portal for learning MQTT and IoT development for Python
+- ["KaiCode 2024 Shortlist"](https://www.kaicode.org/2024.html): TinyFlux came in 10th place out of 412 entrants in the 7th edition of this open-source festival, a festival dedicated to recognizing projects with high-quality open-source principles
 
 ## Contributing
 

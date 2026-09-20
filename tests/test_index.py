@@ -694,3 +694,144 @@ def test_all_get_methods_measurement_filtering_consistency():
     assert measurement2_tag_values["category"] == {"primary", "secondary"}
     assert "type" not in measurement2_tag_values  # Should not exist
     assert "category" not in measurement1_tag_values  # Should not exist
+
+
+def test_remove_timestamps_tail():
+    """Test removal of trailing items keeps the time index in sync."""
+    t0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    index = Index()
+    index.insert([Point(time=t0 + timedelta(hours=i)) for i in range(6)])
+
+    index.remove({3, 4, 5})
+
+    assert index._timestamps == [
+        (t0 + timedelta(hours=i)).timestamp() for i in range(3)
+    ]
+    assert index._storage_pos_sorted_by_ts == [0, 1, 2]
+
+    rst = index.search(TimeQuery() >= t0 + timedelta(hours=1))
+    assert rst.items == {1, 2}
+
+    rst = index.search(TimeQuery() == t0 + timedelta(hours=4))
+    assert rst.items == set()
+
+
+def test_remove_timestamps_head():
+    """Test removal of leading items keeps the time index in sync."""
+    t0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    index = Index()
+    index.insert([Point(time=t0 + timedelta(hours=i)) for i in range(6)])
+
+    index.remove({0, 1, 2})
+    index.update({3: 0, 4: 1, 5: 2})
+
+    assert index._timestamps == [
+        (t0 + timedelta(hours=i)).timestamp() for i in range(3, 6)
+    ]
+    assert index._storage_pos_sorted_by_ts == [0, 1, 2]
+
+    rst = index.search(TimeQuery() == t0)
+    assert rst.items == set()
+
+    rst = index.search(TimeQuery() < t0 + timedelta(hours=4))
+    assert rst.items == {0}
+
+    rst = index.search(TimeQuery() >= t0 + timedelta(hours=4))
+    assert rst.items == {1, 2}
+
+
+def test_remove_timestamps_middle():
+    """Test removal of middle items keeps the time index in sync."""
+    t0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    index = Index()
+    index.insert([Point(time=t0 + timedelta(hours=i)) for i in range(6)])
+
+    index.remove({2, 3})
+    index.update({4: 2, 5: 3})
+
+    assert index._timestamps == [
+        (t0 + timedelta(hours=i)).timestamp() for i in (0, 1, 4, 5)
+    ]
+    assert index._storage_pos_sorted_by_ts == [0, 1, 2, 3]
+
+    rst = index.search(TimeQuery() == t0 + timedelta(hours=2))
+    assert rst.items == set()
+
+    rst = index.search(TimeQuery() >= t0 + timedelta(hours=4))
+    assert rst.items == {2, 3}
+
+    rst = index.search(TimeQuery() != t0 + timedelta(hours=2))
+    assert rst.items == {0, 1, 2, 3}
+
+
+def test_remove_timestamps_unsorted_storage_positions():
+    """Test removal when storage positions are not in time order.
+
+    After Index.build on out-of-order points, the sorted timestamp list
+    and the storage position list are not aligned by position, so removal
+    must filter by storage position rather than list position.
+    """
+    t0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
+
+    # Storage order is out of time order: hours 2, 0, 3, 1.
+    points = [Point(time=t0 + timedelta(hours=h)) for h in (2, 0, 3, 1)]
+    index = Index()
+    index.build(points)
+
+    assert index._timestamps == [
+        (t0 + timedelta(hours=h)).timestamp() for h in (0, 1, 2, 3)
+    ]
+    assert index._storage_pos_sorted_by_ts == [1, 3, 0, 2]
+
+    # Remove the point at storage position 1 (time 00:00).
+    index.remove({1})
+    index.update({2: 1, 3: 2})
+
+    assert index._timestamps == [
+        (t0 + timedelta(hours=h)).timestamp() for h in (1, 2, 3)
+    ]
+    assert index._storage_pos_sorted_by_ts == [2, 0, 1]
+
+    rst = index.search(TimeQuery() == t0)
+    assert rst.items == set()
+
+    rst = index.search(TimeQuery() < t0 + timedelta(hours=2))
+    assert rst.items == {2}
+
+    rst = index.search(TimeQuery() >= t0 + timedelta(hours=2))
+    assert rst.items == {0, 1}
+
+
+def test_remove_all_timestamps():
+    """Test removal of all items empties both time index lists."""
+    t0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    index = Index()
+    index.insert([Point(time=t0 + timedelta(hours=i)) for i in range(4)])
+
+    index.remove({0, 1, 2, 3})
+
+    assert index._timestamps == []
+    assert index._storage_pos_sorted_by_ts == []
+
+    rst = index.search(TimeQuery() >= t0)
+    assert rst.items == set()
+
+
+def test_reset_then_insert_time_index():
+    """Test reset clears storage positions so re-insertion is consistent."""
+    t0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    index = Index()
+    index.insert([Point(time=t0 + timedelta(hours=i)) for i in range(4)])
+
+    index._reset()
+
+    assert index._timestamps == []
+    assert index._storage_pos_sorted_by_ts == []
+
+    index.insert([Point(time=t0)])
+
+    assert index._timestamps == [t0.timestamp()]
+    assert index._storage_pos_sorted_by_ts == [0]
+
+    rst = index.search(TimeQuery() == t0)
+    assert rst.items == {0}

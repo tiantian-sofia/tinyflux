@@ -507,6 +507,7 @@ class Index:
         Args:
             u_items: A mapping of old indices to update indices.
         """
+        self._update_timestamps(u_items)
         self._update_measurements(u_items)
         self._update_tags(u_items)
         self._update_fields(u_items)
@@ -584,6 +585,7 @@ class Index:
         self._fields = {}
         self._measurements = {}
         self._timestamps = []
+        self._storage_pos_sorted_by_ts = []
 
         self._valid = True
 
@@ -885,12 +887,30 @@ class Index:
             r_items: A set of indices to remove.
         """
         new_timestamps = []
+        new_storage_pos_sorted_by_ts = []
 
-        for i, ts in enumerate(self._timestamps):
-            if i not in r_items:
+        for ts, storage_pos in zip(
+            self._timestamps, self._storage_pos_sorted_by_ts
+        ):
+            if storage_pos not in r_items:
                 new_timestamps.append(ts)
+                new_storage_pos_sorted_by_ts.append(storage_pos)
 
         self._timestamps = new_timestamps
+        self._storage_pos_sorted_by_ts = new_storage_pos_sorted_by_ts
+
+        return
+
+    def _update_timestamps(self, u_items: Dict[int, int]) -> None:
+        """Update timestamps index.
+
+        Args:
+            u_items: A mapping of old indices to new indices.
+        """
+        self._storage_pos_sorted_by_ts = [
+            u_items[i] if i in u_items else i
+            for i in self._storage_pos_sorted_by_ts
+        ]
 
         return
 
